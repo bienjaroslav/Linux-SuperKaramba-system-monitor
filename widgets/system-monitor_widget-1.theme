@@ -1,0 +1,108 @@
+# Copyright (C) 2010 Jaroslav Bien.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+karamba x=50 y=50 w=260 h=370 interval=1000 locked=false
+defaultfont font="sans" fontsize=9 color=230,230,230 shadow=1 bgcolor=80,80,80
+
+<group> x=0 y=0
+    image x=0 y=0 path="img/back_topb.png"
+</group>
+
+# User
+<group> x=0 y=20
+    text x=50 y=4 value="User:"
+    text x=235 y=4 sensor=program program="echo ${USER}@ `hostname`" fontsize=9 interval=600000 align="right"
+</group>
+
+# System
+<group> x=0 y=40
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="System" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        image x=25 y=0 path="img/os/SuSE.png"
+        text x=50 y=4 value="GNU/Linux:"
+        text x=235 y=4 sensor=program program="cat /etc/SuSE-release | grep -m 1 openSUSE" fontsize=9 interval=600000 align="right"
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+        image x=25 y=0 path="img/os/Tux.png"
+        text x=50 y=4 value="Kernel:"
+        text x=235 y=4 sensor=program program="uname -r" align="right" interval=600000
+    </group>
+    <group> x=0 y=80
+        image x=0 y=0 path="img/back_20b.png"
+        image x=25 y=0 path="img/system/KDE.png"
+        text x=50 y=4 value="KDE:"
+        text x=235 y=4 sensor=program program="kopete --version | grep KDE | awk '{print $4" "$7" "$8}'" align="right" interval=600000
+    </group>
+    <group> x=0 y=100
+        image x=0 y=0 path="img/back_20b.png"
+        image x=25 y=0 path="img/system/Qt.png"
+        text x=50 y=4 value="Qt:"
+	text x=235 y=4 sensor=program program="kde-config --version | grep Qt | sed -e 's/.*: //'" align="right" interval=600000
+    </group>
+    <group> x=0 y=120
+        image x=0 y=0 path="img/back_20b.png"
+        image x=25 y=0 path="img/system/OpenGL.png"
+        text x=50 y=4 value="OpenGL:"
+        text x=235 y=4 sensor=program program="nvidia-settings -q all | grep 'Attribute.*OpenGLVersion' | sed -e 's/.*: //'" align="right" interval=10000
+    </group>
+    <group> x=0 y=140
+        image x=0 y=0 path="img/back_20b.png"
+        image x=25 y=0 path="img/system/Java.png"
+        text x=50 y=4 value="Java:"
+        text x=235 y=4 sensor=program program="java -version 2> /tmp/java.version; cat /tmp/java.version | grep 'java version' | awk '{ print substr($3, 2, length($3)-2)}'; rm /tmp/java.version" align="right" interval=600000
+    </group>
+</group>
+
+# Runtime
+<group> x=0 y=200
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="Runtime" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        image x=25 y=0 path="img/sysinfo.png"
+        text x=50 y=4 value="Uptime:"
+        text x=235 y=4 sensor=uptime format="%d day(s), %H:%M"  align="right" interval=60000
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+	text x=50 y=4 value="Processes:"
+	text x=235 y=4 sensor=program program="RUNNING=`ps axr| wc -l`; TOTAL=`ps xa | wc -l`; echo $RUNNING running / $TOTAL total" align="right" interval=1000
+    </group>
+    <group> x=0 y=80
+        image x=0 y=0 path="img/back_20b.png"
+	text x=50 y=4 value="Top Proc:"
+	text x=235 y=4 value="[command, user, CPU, mem]" align="right"
+    </group>
+    <group> x=0 y=100
+        image x=0 y=0 path="img/back_20b.png"
+        image x=0 y=20 path="img/back_20b.png"
+	text x=235 y=0 sensor=program program="TOP=`ps axo comm,user,pcpu,pmem --sort=-pcpu | head -n 2 | tail -n 1 | awk '{print $1, $2, $3, $4}'`; arr=(${TOP}); echo ${arr[0]}, ${arr[1]}, ${arr[2]}%, ${arr[3]}%" align="right" interval=1000
+        text x=235 y=10 sensor=program program="TOP=`ps axo comm,user,pcpu,pmem --sort=-pcpu | head -n 3 | tail -n 1 | awk '{print $1, $2, $3, $4}'`; arr=(${TOP}); echo ${arr[0]}, ${arr[1]}, ${arr[2]}%, ${arr[3]}%" align="right" interval=1000
+        text x=235 y=20 sensor=program program="TOP=`ps axo comm,user,pcpu,pmem --sort=-pcpu | head -n 4 | tail -n 1 | awk '{print $1, $2, $3, $4}'`; arr=(${TOP}); echo ${arr[0]}, ${arr[1]}, ${arr[2]}%, ${arr[3]}%" align="right" interval=1000
+    </group>
+</group>
+
+<group> x=0 y=340
+    image x=0 y=0 path="img/back_bottomb.png"
+</group>

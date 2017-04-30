@@ -1,0 +1,190 @@
+# Copyright (C) 2010 Jaroslav Bien.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+karamba x=50 y=50 w=260 h=650 interval=1000 locked=false
+defaultfont font="sans" fontsize=9 color=230,230,230 shadow=1 bgcolor=80,80,80
+
+<group> x=0 y=0
+    image x=0 y=0 path="img/back_topb.png"
+</group>
+
+# Motherboard
+<group> x=0 y=40
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="Motherboard" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=sensor type="M/B Temp" path="img/bar4.png" min=0 max=65 interval=10000
+        text x=50 y=4 value="Temperature:"
+        text x=224 y=4 sensor=sensor type="M/B Temp" align="right" interval=10000
+        text x=235 y=4 value="°C" align="right"
+    </group>
+</group>
+
+# Processor
+<group> x=0 y=100
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="Processor" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Vendor:"
+        text x=235 y=4 sensor=program program="cat /proc/cpuinfo | grep vendor_id | sed -e 's/.*: //'" align="right" interval=1000
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Model:"
+        text x=235 y=4 sensor=program program="cat /proc/cpuinfo | grep 'model name' | awk '{print $4, $5, $6}'" align="right" interval=1000
+    </group>
+    <group> x=0 y=80
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Type:"
+        text x=235 y=4 sensor=program program="uname -p" align="right" interval=1000
+    </group>
+    <group> x=0 y=100
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Platform:"
+        text x=235 y=4 sensor=program program="uname -i" align="right" interval=1000
+    </group>
+    <group> x=0 y=120
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=cpu path="img/bar4.png" max=100 interval=1000
+        text x=50 y=4 value="Load:"
+        text x=235 y=4 sensor=cpu format="%load%" align=right interval=1000
+        image x=0 y=20 path="img/back_20b.png"
+        image x=0 y=40 path="img/back_20b.png"
+        image x=50 y=21 path="img/backgrix.png"
+        graph x=50 y=20 w=180 h=30 points=37 color=0,0,255 sensor=cpu min=0 max=100 interval=1000
+        text x=50 y=20 value="system:" fontsize=8
+        text x=100 y=20 sensor=cpu format="%system%" fontsize=8 align="right"
+        text x=50 y=30 value="user:" fontsize=8
+        text x=100 y=30 sensor=cpu format="%user%" fontsize=8 align="right"
+        text x=50 y=40 value="nice:" fontsize=8
+        text x=100 y=40 sensor=cpu format="%nice%" fontsize=8 align="right"
+    </group>
+    <group> x=0 y=180
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false path="img/bar4.png" sensor=program program="cat /proc/cpuinfo | grep 'cpu MHz' | sed -e 's/.*: //'| sed -e 's/\....//'" max=1729 interval=1000
+        text x=50 y=4 value="Frequency:"
+        text x=235 y=4 sensor=program program="cat /proc/cpuinfo | grep 'cpu MHz' | sed -e 's/.*: //'| sed -e 's/\..../ MHz/'" align=right interval=1000
+    </group>
+    <group> x=0 y=200
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false path="img/bar4.png" sensor=program program="cat /proc/cpuinfo | grep 'cache size' | awk '{print $4}'" max=1729 interval=1000
+        text x=50 y=4 value="Cache:"
+        text x=235 y=4 sensor=program program="CACHE=`cat /proc/cpuinfo | grep 'cache size' | awk '{print $4}'`; echo $CACHE kB" align=right interval=1000
+    </group>
+    <group> x=0 y=220
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=sensor type="CPU Temp" path="img/bar4.png" min=0 max=100 interval=10000
+        text x=50 y=4 value="Temperature:"
+        text x=224 y=4 sensor=sensor type="CPU Temp" align=right interval=10000
+        text x=235 y=4 value="°C" align="right"
+    </group>
+</group>
+
+# Memory
+<group> x=0 y=340
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="Memory" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=memory format="%um" path="img/bar4.png" interval=5000
+	text x=50 y=4 value="RAM:"
+	text x=235 y=4 sensor=memory format="%um / %tm MB" align="right" interval=5000
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=memory format="%us" path="img/bar4.png" interval=5000
+	text x=50 y=4 value="Swap:"
+	text x=235 y=4 sensor=memory format="%us / %ts MB" align="right" interval=5000
+    </group>
+</group>
+
+# Graphics card
+<group> x=0 y=420
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="Graphics Card" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Vendor:"
+        text x=235 y=4 value="NVIDIA" align="right"
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Model:"
+        text x=235 y=4 value="GeForce Go 7300" align="right"
+    </group>
+    <group> x=0 y=80
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="nvidia-settings -q all | grep -m 1 'Attribute.*GPUCurrentClockFreqs' | tr -s '.,:' ' ' | cut -d ' ' -f8" path="img/bar4.png" min=0 max=350 interval=10000
+        text x=50 y=4 value="Processor Frequency:"
+        text x=235 y=4 sensor=program program="TEMP=`nvidia-settings -q all | grep -m 1 'Attribute.*GPUCurrentClockFreqs' | tr -s '.,:' ' ' | cut -d ' ' -f8`; echo $TEMP MHz" align="right" interval=10000
+    </group>
+    <group> x=0 y=100
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="nvidia-settings -q gpucoretemp | grep '):' | awk '{print $4 0}'" path="img/bar4.png" min=0 max=105 interval=10000
+        text x=50 y=4 value="Processor Temperature:"
+        text x=235 y=4 sensor=program program="TEMP=`nvidia-settings -q gpucoretemp | grep '):' | awk '{print $4 0}'`; echo $TEMP°C" align="right" interval=10000
+    </group>
+    <group> x=0 y=120
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="nvidia-settings -q all | grep -m 1 'Attribute.*GPUCurrentClockFreqs' | tr -s '.,:' ' ' | cut -d' ' -f9" path="img/bar4.png" min=0 max=700 interval=10000
+        text x=50 y=4 value="Memory Frequency:"
+        text x=235 y=4 sensor=program program="TEMP=`nvidia-settings -q all | grep -m 1 'Attribute.*GPUCurrentClockFreqs' | tr -s '.,:' ' ' | cut -d' ' -f9`; echo $TEMP MHz" align="right" interval=10000
+    </group>
+    <group> x=0 y=140
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="TEMP=`nvidia-settings -q all | grep -m 1 'Attribute.*VideoRam' | tr -s '.,:' ' ' | cut -d' ' -f8`; A=`expr $TEMP / 1024`; echo $A" path="img/bar4.png" min=0 max=256 interval=10000
+        text x=50 y=4 value="Memory Size:"
+        text x=235 y=4 sensor=program program="TEMP=`nvidia-settings -q all | grep -m 1 'Attribute.*VideoRam' | tr -s '.,:' ' ' | cut -d' ' -f8`; A=`expr $TEMP / 1024`; echo $A / 256 MB" align="right" interval=10000
+    </group>
+    <group> x=0 y=160
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Refresh Rate:"
+        text x=235 y=4 sensor=program program="TEMP=`nvidia-settings -q all | grep -m 1 'Attribute.*RefreshRate' | cut -d' ' -f9`; echo $TEMP Hz" align="right" interval=10000
+    </group>
+    <group> x=0 y=180
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Resolution:"
+        text x=235 y=4 sensor=program program="`nvidia-settings -q all | grep -m 1 'Attribute.*FrontendResolution' | cut -d' ' -f7`; echo $W x $H" align="right" interval=10000
+    </group>
+</group>
+
+<group> x=0 y=620
+    image x=0 y=0 path="img/back_bottomb.png"
+</group>

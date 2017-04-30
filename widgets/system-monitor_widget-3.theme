@@ -1,0 +1,196 @@
+# Copyright (C) 2010 Jaroslav Bien.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+karamba x=50 y=50 w=260 h=730 interval=1000 locked=false
+defaultfont font="sans" fontsize=9 color=230,230,230 shadow=1 bgcolor=80,80,80
+
+<group> x=0 y=0
+    image x=0 y=0 path="img/back_topb.png"
+</group>
+
+# Media
+<group> x=0 y=40
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="Media" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Model:"
+	text x=235 y=4 sensor=program program="sudo smartctl -d ata -T conservative /dev/sda -i | grep 'Model Family:' | sed -e 's/.*: //'" align="right" interval=3600000
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=disk mountpoint="/" format="%u" path="img/bar4.png" min=0 interval=60000
+        text x=50 y=4 value="Root:"
+        text x=235 y=4 sensor=disk mountpoint="/" format="%u / %t MB" align="right" interval=60000
+    </group>
+    <group> x=0 y=80
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=disk mountpoint="/home" format="%u" path="img/bar4.png" min=0 interval=60000
+        text x=50 y=4 value="Home:"
+	text x=235 y=4 sensor=disk mountpoint="/home" format="%u / %t MB" align="right" interval=60000
+    </group>
+    <group> x=0 y=100
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="sudo smartctl -d ata -A /dev/sda | grep Temperature_Celsius | awk '{print $10}'" path="img/bar4.png" min=3 max=72 interval=10000
+        text x=50 y=4 value="Temperature:"
+        text x=235 y=4 sensor=program program="TEMP=`sudo smartctl -d ata -A /dev/sda | grep Temperature_Celsius | awk '{print $10}'`; echo $TEMP.0°C" align="right" interval=10000
+    </group>
+    <group> x=0 y=120
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="SMART Health Test:"
+	text x=235 y=4 sensor=program program="sudo smartctl -d ata -T conservative -H /dev/sda | grep result: | awk '{print $6}' | tr '[:upper:]' '[:lower:]'" align="right" interval=3600000
+    </group>
+</group>
+
+# AC Adapter & Battery
+<group> x=0 y=180
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="AC Adapter & Battery" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="AC Adapter:"
+	text x=235 y=4 sensor=program program="acpi -V | grep AC | sed 's/.*: //'" align="right" interval=2000
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="T=`acpi -b`; A=(${T}); B=`echo ${A[2]} | awk '{print substr($1, 0, (length($1) - 1))}'`; C=`echo ${A[4]}`; D=`echo ${A[3]} | awk '{print substr($1, 0, (length($1) - 1))}'`; if [ 100 = `echo $D` ] ; then echo $D ; else echo $D | awk '{print substr($1, 0, (length($1) - 1))}'; fi" path="img/bar4.png" min=0 max=100 interval=2000
+        text x=50 y=4 value="Battery Charge:"
+        text x=235 y=4 sensor=program program="T=`acpi -b`; A=(${T}); B=`echo ${A[2]} | awk '{print substr($1, 0, (length($1) - 1))}'`; C=`echo ${A[4]}`; D=`echo ${A[3]} | awk '{print substr($1, 0, (length($1) - 1))}'`; if [ 100 = `echo $D` ] ; then echo $B, $D% ; else echo $B \(remaining $C\), $D; fi" interval=2000 align="right"
+    </group>
+    <group> x=0 y=80
+        image x=0 y=0 path="img/back_20b.png"
+        image x=50 y=2 path="img/backsens.png"
+        bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="acpi -V | grep Thermal | awk '{print $4}'" path="img/bar4.png" min=0 max=105 interval=2000
+        text x=50 y=4 value="Battery Temperature:"
+        text x=235 y=4 sensor=program program="THERMAL=`acpi -V | grep Thermal | awk '{print $4}'`; echo $THERMAL°C" interval=2000 align="right"
+    </group>
+</group>
+
+# Network
+<group> x=0 y=280
+    <group> x=0 y=0
+        image x=0 y=0 path="img/back_20b_category.png"
+        image x=0 y=20 path="img/back_20b.png"
+        text x=25 y=20 value="Network" fontsize=12 font="monospace"
+    </group>
+    <group> x=0 y=40
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Public IP Address:"
+	text x=235 y=4 sensor=program program="curl http://ip-address.domaintools.com/myip.xml | grep ip_address | sed -e 's/^[ \t]*//;s/[ \t]*$//' | sed -e 's/^<.*>\([^<].*\)<.*>$/\1/'" align="right" interval=86400000
+    </group>
+    <group> x=0 y=60
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Public Hostname:"
+	text x=235 y=4 sensor=program program="curl http://ip-address.domaintools.com/myip.xml | grep hostname | sed -e 's/^[ \t]*//;s/[ \t]*$//' | sed -e 's/^<.*>\([^<].*\)<.*>$/\1/'" align="right" interval=86400000
+    </group>
+    <group> x=0 y=80
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Gateway IP address:"
+        text x=235 y=4 sensor=program program="ip -f inet route list | grep default | sed 's/.*via //;s/ dev.*//'" align="right" interval=15000
+    </group>
+    <group> x=0 y=100
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Private IP address:"
+        text x=235 y=4 sensor=program program="IPADDR=`/sbin/ifconfig eth1 | grep 'inet adr' | awk '{print $2}' | sed -s 's/adr://'`; if [ 0 -eq `echo $IPADDR | grep -c UP` ] ; then echo down ; elif [ 0 -eq `echo $IPADDR | grep -c 'inet '` ] ; then echo up, no IP ; else echo $IPADDR | sed -e 's/.*inet //;s/ .*$//' ; fi" align="right" interval=15000
+    </group>
+    <group> x=0 y=120
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="Private Hostname:"
+        text x=235 y=4 sensor=program program="uname -n" align="right" interval=600000
+    </group>
+    # Wifi
+    <group> x=0 y=140
+        <group> x=0 y=0
+            image x=0 y=0 path="img/back_20b.png"
+            text x=50 y=4 value="ESSID:"
+            text x=235 y=4 sensor=program program="iwconfig |grep eth1 | awk '{print $4}' | sed -e 's/ESSID://' | awk '{ print substr($1, 2, length($1)-2)}'" align="right" interval=60000
+        </group>
+        <group> x=0 y=20
+            image x=0 y=0 path="img/back_20b.png"
+            text x=50 y=4 value="Frequency:"
+            text x=235 y=4 sensor=program program="iwgetid --freq | awk '{print $2, $3}' | sed -s 's/Frequency=//;s///'" align="right" interval=60000
+        </group>
+        <group> x=0 y=40
+            image x=0 y=0 path="img/back_20b.png"
+            text x=50 y=4 value="Channel:"
+            text x=235 y=4 sensor=program program="iwgetid --raw --channel" align="right" interval=60000
+        </group>
+        <group> x=0 y=60
+            image x=0 y=0 path="img/back_20b.png"
+            text x=50 y=4 value="Protocol:"
+            text x=235 y=4 sensor=program program="iwgetid --raw --protocol" align="right" interval=60000
+        </group>
+        <group> x=0 y=80
+            image x=0 y=0 path="img/back_20b.png"
+            image x=50 y=2 path="img/backsens.png"
+	    bar x=50 y=2 w=185 h=16 vertical=false sensor=program program="iwconfig | grep 'Link Quality' | awk '{print $2}' | sed -s 's/Quality=//;' | awk '{print substr($1, 0, (length($1)-4))}'" path="img/bar4.png" min=0 max=100 interval=2000
+            text x=50 y=4 value="Connection Quality:"
+            text x=235 y=4 sensor=program program="QUALITY=`iwconfig | grep 'Link Quality' | awk '{print $2}' | sed -s 's/Quality=//;' | awk '{print substr($1, 0, (length($1)-4))}'`; echo $QUALITY%" align="right" interval=2000
+        </group>
+        <group> x=0 y=100
+            image x=0 y=0 path="img/back_20b.png"
+            text x=50 y=4 value="Connection Speed:"
+            text x=235 y=4 sensor=program program="BIT_RATE=`iwconfig |grep 'Bit Rate:' | awk '{print $2}' | sed -s 's/Rate://;'`; echo $BIT_RATE Mbit/s" align="right" interval=2000
+        </group>
+        # Network upload/download graph
+        <group> x=0 y=120
+            image x=0 y=0 path="img/back_20b.png"
+            text x=50 y=4 value="Upload Speed:"
+            text x=235 y=4 sensor=network device="eth1" format="%out kB/s" align="right"
+            image x=0 y=20 path="img/back_20b.png"
+            text x=50 y=24 value="Download Speed:"
+            text x=235 y=24 sensor=network device="eth1" format="%in kB/s" align="right"
+            image x=0 y=40 path="img/back_20b.png"
+            image x=0 y=60 path="img/back_20b.png"
+            image x=50 y=41 path="img/backgrix.png"
+            graph x=50 y=40 w=180 h=30 points=37 color=255,0,0 sensor=network device="eth1" format="%out" min=0 max=256 interval=1000
+            graph x=50 y=40 w=180 h=30 points=37 color=0,0,255 sensor=network device="eth1" format="%in" min=0 max=256 interval=1000
+            text x=50 y=45 value="upload" fontsize=8 color=255,0,0
+            text x=50 y=55 value="download" fontsize=8 color=0,0,255
+        </group>
+        <group> x=0 y=200
+            image x=0 y=0 path="img/back_20b.png"
+            text x=50 y=4 value="Uploaded:"
+            text x=235 y=4 sensor=program program="/sbin/ifconfig eth1 | grep 'RX byte' | awk '{print substr($7, 2, length($7)), substr($8, 1, length($8)-1)}' | tr '[:lower:]' '[:upper:]'" interval=10000 align="right"
+            image x=0 y=20 path="img/back_20b.png"
+            text x=50 y=24 value="Downloaded:"
+            text x=235 y=24 sensor=program program="/sbin/ifconfig eth1 | grep 'RX byte' | awk '{print substr($3, 2, length($3)), substr($4, 1, length($4)-1)}' | tr '[:lower:]' '[:upper:]'" interval=10000 align="right"
+        </group>
+    </group>
+    <group> x=0 y=380
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="TCP Connections:"
+        text x=235 y=4 sensor=program program="netstat | grep -Fc 'tcp'" align="right" interval=15000
+    </group>
+    <group> x=0 y=400
+        image x=0 y=0 path="img/back_20b.png"
+        text x=50 y=4 value="UDP Connections:"
+        text x=235 y=4 sensor=program program="netstat -lu | grep -Fc 'udp'" align="right" interval=15000
+    </group>
+</group>
+
+<group> x=0 y=700
+    image x=0 y=0 path="img/back_bottomb.png"
+</group>
