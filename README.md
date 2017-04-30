@@ -22,7 +22,7 @@ The system monitoring widgets from this project look like on the following scree
 
 
 ## Usage
-- install SuperKaramba package into your KDE desktop (installation depends on the distro you use)
+- install SuperKaramba package into your KDE desktop (installation depends on the Linux distro you use)
 - download the widgets with the image resources and copy onto your computer
 - import the widgets into SuperKaramba
 
